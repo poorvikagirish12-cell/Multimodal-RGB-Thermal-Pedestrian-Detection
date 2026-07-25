@@ -60,18 +60,26 @@ Our proposed detector (**CMAF-SOEM QFDet**) introduces a **Cross-Modal Attention
 
 ```
 Multimodal-RGB-Thermal-Pedestrian-Detection/
+├── train_data/                 # Training Set images (RGB & Thermal)
+├── val_data/                   # Validation Set images
+├── test_data/                  # Testing Set images for final evaluation
+├── models/                     # Saved PyTorch model weights (.pth)
+├── VTUAV_subset/               
+│   ├── annotations/            # JSON files containing dataset splits & bboxes
+│   ├── VTUAV_co/               # Core RGB images
+│   └── VTUAV_ir/               # Core Thermal images
 ├── README.md                           # Main repository documentation
 ├── requirements.txt                    # Python dependencies
 ├── MODEL_CARD.md                       # Trained Model documentation
 ├── VTUAV_Pedestrian_Detection_Colab.ipynb # Google Colab Interactive Notebook
 ├── .gitignore                          # Git ignore rules for dataset/venv
-├── stage1_analysis.py                  # Stage 1: Dataset stats & alignment script
-├── stage2_unimodal_benchmark.py        # Stage 2: Unimodal vs Baseline benchmark script
-├── stage3_fusion_architecture.py       # Stage 3: PyTorch CMAF & SOEM fusion modules
-├── stage3_train_evaluate.py            # Stage 3: Fine-tuning & ablation study script
-├── stage4_final_eval_qualitative.py    # Stage 4: Qualitative eval & prediction exporter
-├── save_model.py                       # Script to save reproducible checkpoint
-├── infer_single_pair.py                # Interactive single-pair Demo Inference script
+├── stage1_analysis.py          # Data preparation & split verification
+├── stage2_benchmark.py         # Baseline benchmarking (FLOPs/Params)
+├── stage3_ablation.py          # CMAF & SOEM Module Architectures
+├── stage4_final_eval_qualitative.py # Generates final mAP scores
+├── infer_single_pair.py        # Hackathon Interactive Demo Inference
+├── save_model.py               # Generates and saves model weights
+├── create_colab_notebook.py    # Auto-generates the Google Colab environment
 ├── final_technical_report.md           # Master 3-5 Page Technical Report
 ├── presentation_slides_outline.md      # Hackathon Defense Presentation Slide Outline
 ├── stage1_report.md                    # Stage 1 detailed report
