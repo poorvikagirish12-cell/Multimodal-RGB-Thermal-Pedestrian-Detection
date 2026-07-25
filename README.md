@@ -61,6 +61,8 @@ Our proposed detector (**CMAF-SOEM QFDet**) introduces a **Cross-Modal Attention
 ```
 Multimodal-RGB-Thermal-Pedestrian-Detection/
 ├── README.md                           # Main repository documentation
+├── requirements.txt                    # Python dependencies
+├── MODEL_CARD.md                       # Trained Model documentation
 ├── VTUAV_Pedestrian_Detection_Colab.ipynb # Google Colab Interactive Notebook
 ├── .gitignore                          # Git ignore rules for dataset/venv
 ├── stage1_analysis.py                  # Stage 1: Dataset stats & alignment script
@@ -68,6 +70,8 @@ Multimodal-RGB-Thermal-Pedestrian-Detection/
 ├── stage3_fusion_architecture.py       # Stage 3: PyTorch CMAF & SOEM fusion modules
 ├── stage3_train_evaluate.py            # Stage 3: Fine-tuning & ablation study script
 ├── stage4_final_eval_qualitative.py    # Stage 4: Qualitative eval & prediction exporter
+├── save_model.py                       # Script to save reproducible checkpoint
+├── infer_single_pair.py                # Interactive single-pair Demo Inference script
 ├── final_technical_report.md           # Master 3-5 Page Technical Report
 ├── presentation_slides_outline.md      # Hackathon Defense Presentation Slide Outline
 ├── stage1_report.md                    # Stage 1 detailed report
@@ -103,7 +107,7 @@ Click the badge above or use this link:
 git clone https://github.com/poorvikagirish12-cell/Multimodal-RGB-Thermal-Pedestrian-Detection.git
 cd Multimodal-RGB-Thermal-Pedestrian-Detection
 
-pip install torch torchvision opencv-python numpy matplotlib pycocotools
+pip install -r requirements.txt
 
 # Run stage scripts
 python stage1_analysis.py
@@ -111,7 +115,33 @@ python stage2_unimodal_benchmark.py
 python stage3_fusion_architecture.py
 python stage3_train_evaluate.py
 python stage4_final_eval_qualitative.py
+python save_model.py
 ```
+
+---
+
+## 🎥 Demo Video & Inference
+
+An interactive Demo is available natively within the **Google Colab Notebook**. Step 7 of the notebook runs `infer_single_pair.py` which takes a test image pair and outputs the side-by-side detection grid.
+
+You can also run the demo locally:
+```bash
+python infer_single_pair.py --rgb VTUAV_subset/VTUAV_co/test/images/00024.jpg --ir VTUAV_subset/VTUAV_ir/test/images/00024.jpg --out outputs/demo_result.png
+```
+
+To create a **Demo Video** for your hackathon submission, open the provided Colab Notebook, record your screen (using OBS or a browser extension), and walk through:
+1. Cloning and setup
+2. Dataset preprocessing
+3. Model training / ablation curves
+4. Step 7 Interactive Demo showcasing the bounding boxes on the Thermal & RGB images!
+
+---
+
+## 💾 Trained Model & Checkpoints
+
+The final trained model weights and architecture are bundled into a reproducible checkpoint (`outputs/cmaf_soem_qfdet_v1.pth`) by running `save_model.py`.
+
+Please view the full [Model Card](MODEL_CARD.md) for details on parameters, FLOPs, and loading instructions.
 
 ---
 

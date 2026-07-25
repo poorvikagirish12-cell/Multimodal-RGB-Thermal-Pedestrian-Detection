@@ -158,7 +158,46 @@ notebook = {
             "cell_type": "markdown",
             "metadata": {},
             "source": [
-                "## 📋 Step 6: Summary Results & Master Technical Report\n",
+                "## 💾 Step 6: Save Model Checkpoint\n",
+                "Generate the trained model checkpoint (`.pth`) and model card."
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "# Run the save model script\n",
+                "!python save_model.py"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "## 🎥 Step 7: Interactive Demo (Single Image Pair Inference)\n",
+                "Run inference on a single RGB-Thermal image pair and visualize the predicted bounding boxes and confidence scores side-by-side. This serves as a live demo of the project."
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "# Run single pair inference demo\n",
+                "!python infer_single_pair.py --rgb VTUAV_subset/VTUAV_co/test/images/00024.jpg --ir VTUAV_subset/VTUAV_ir/test/images/00024.jpg --out outputs/demo_result.png\n",
+                "\n",
+                "# Display the demo result\n",
+                "display(Image('outputs/demo_result.png', width=900))"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "## 📋 Step 8: Summary Results & Master Technical Report\n",
                 "Display the master benchmark table and view generated submission deliverables."
             ]
         },
