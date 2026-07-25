@@ -3,12 +3,10 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Directories
-BASE_DIR = r"c:\chrome downloads\VTUAV_subset\VTUAV_subset"
-ARTIFACT_DIR = r"C:\Users\poorv\.gemini\antigravity\brain\9d586968-e7e9-476a-a38e-2dea93a9b897"
-OUTPUT_DIR = r"c:\chrome downloads\VTUAV_subset\outputs"
+# Dynamic cross-platform base directories
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+OUTPUT_DIR = os.path.join(SCRIPT_DIR, "outputs")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
-os.makedirs(ARTIFACT_DIR, exist_ok=True)
 
 VAL_RESULTS = {
     'RGB-only': {
@@ -107,9 +105,7 @@ def plot_detection_metrics():
     
     plt.tight_layout()
     plot_path = os.path.join(OUTPUT_DIR, 'stage2_detection_metrics.png')
-    artifact_plot_path = os.path.join(ARTIFACT_DIR, 'stage2_detection_metrics.png')
     plt.savefig(plot_path, dpi=300)
-    plt.savefig(artifact_plot_path, dpi=300)
     plt.close()
     print(f"Saved detection metrics chart to {plot_path}")
 
@@ -163,9 +159,7 @@ def plot_compute_metrics():
                      
     plt.tight_layout()
     compute_path = os.path.join(OUTPUT_DIR, 'stage2_compute_metrics.png')
-    artifact_compute_path = os.path.join(ARTIFACT_DIR, 'stage2_compute_metrics.png')
     plt.savefig(compute_path, dpi=300)
-    plt.savefig(artifact_compute_path, dpi=300)
     plt.close()
     print(f"Saved compute metrics chart to {compute_path}")
 

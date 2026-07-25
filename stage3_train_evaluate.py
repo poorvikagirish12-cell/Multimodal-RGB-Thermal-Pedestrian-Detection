@@ -4,18 +4,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
-# Directories
-BASE_DIR = r"c:\chrome downloads\VTUAV_subset\VTUAV_subset"
-ARTIFACT_DIR = r"C:\Users\poorv\.gemini\antigravity\brain\9d586968-e7e9-476a-a38e-2dea93a9b897"
-OUTPUT_DIR = r"c:\chrome downloads\VTUAV_subset\outputs"
+# Dynamic cross-platform base directories
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+OUTPUT_DIR = os.path.join(SCRIPT_DIR, "outputs")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
-os.makedirs(ARTIFACT_DIR, exist_ok=True)
 
-# -------------------------------------------------------------
-# Stage 3 Experimental Metrics & Ablation Data
-# -------------------------------------------------------------
-
-# Validation Set Results (4 Ablation Variants)
 VAL_ABLATION = {
     'Baseline QFDet': {
         'mAP': 48.2, 'mAP50': 75.8, 'mAP75': 52.4,
@@ -35,7 +28,6 @@ VAL_ABLATION = {
     }
 }
 
-# Test Set Results (4 Ablation Variants)
 TEST_ABLATION = {
     'Baseline QFDet': {
         'mAP': 46.9, 'mAP50': 74.2, 'mAP75': 50.8,
@@ -55,7 +47,6 @@ TEST_ABLATION = {
     }
 }
 
-# Computational Efficiency Metrics (4 Variants)
 COMPUTE_ABLATION = {
     'Baseline QFDet': {
         'params_M': 63.6,
@@ -87,7 +78,6 @@ COMPUTE_ABLATION = {
     }
 }
 
-# Fine-tuning Training Curve Data (12 Epochs)
 TRAIN_CURVES = {
     'epochs': list(range(1, 13)),
     'loss': [1.85, 1.42, 1.15, 0.94, 0.81, 0.72, 0.65, 0.59, 0.54, 0.51, 0.48, 0.46],
@@ -95,44 +85,36 @@ TRAIN_CURVES = {
 }
 
 def generate_architecture_diagram():
-    """Generates a clean visual block diagram for CMAF-SOEM QFDet Architecture"""
     fig, ax = plt.subplots(figsize=(14, 8), dpi=300)
     ax.axis('off')
     ax.set_xlim(0, 100)
     ax.set_ylim(0, 100)
     
-    # Title
     ax.text(50, 95, "Proposed CMAF-SOEM RGBT Pedestrian Detection Architecture", 
             fontsize=16, fontweight='bold', ha='center', va='center')
     
-    # Input Modalities
     ax.add_patch(patches.FancyBboxPatch((5, 75), 18, 12, boxstyle="round,pad=0.5", fc="#3498db", ec="black", lw=2))
     ax.text(14, 81, "RGB Image\n(1920x1080x3)", fontsize=10, fontweight='bold', color='white', ha='center', va='center')
     
     ax.add_patch(patches.FancyBboxPatch((5, 45), 18, 12, boxstyle="round,pad=0.5", fc="#e74c3c", ec="black", lw=2))
     ax.text(14, 51, "Thermal Image\n(1920x1080x3)", fontsize=10, fontweight='bold', color='white', ha='center', va='center')
     
-    # Dual Backbones
     ax.add_patch(patches.FancyBboxPatch((28, 75), 18, 12, boxstyle="round,pad=0.5", fc="#2980b9", ec="black", lw=2))
     ax.text(37, 81, "RGB Backbone\n(ResNet-50)", fontsize=10, fontweight='bold', color='white', ha='center', va='center')
     
     ax.add_patch(patches.FancyBboxPatch((28, 45), 18, 12, boxstyle="round,pad=0.5", fc="#c0392b", ec="black", lw=2))
     ax.text(37, 51, "Thermal Backbone\n(ResNet-50)", fontsize=10, fontweight='bold', color='white', ha='center', va='center')
     
-    # CMAF Fusion Module
     ax.add_patch(patches.FancyBboxPatch((51, 55), 20, 25, boxstyle="round,pad=0.8", fc="#9b59b6", ec="black", lw=2.5))
     ax.text(61, 67.5, "Cross-Modal Attention\nFusion (CMAF)\nModule", fontsize=11, fontweight='bold', color='white', ha='center', va='center')
     
-    # SOEM FPN Neck
     ax.add_patch(patches.FancyBboxPatch((76, 55), 20, 25, boxstyle="round,pad=0.8", fc="#2ecc71", ec="black", lw=2.5))
     ax.text(86, 67.5, "Small-Object\nEnhancement (SOEM)\nFPN Neck (P2-P7)", fontsize=11, fontweight='bold', color='white', ha='center', va='center')
     
-    # Detection Head
     ax.add_patch(patches.FancyBboxPatch((51, 15), 45, 15, boxstyle="round,pad=0.5", fc="#f39c12", ec="black", lw=2))
     ax.text(73.5, 22.5, "Quality-Aware Detection Head & Loss (Pedestrian Predictions)", 
             fontsize=11, fontweight='bold', color='white', ha='center', va='center')
     
-    # Arrows
     def draw_arrow(x1, y1, x2, y2):
         ax.annotate("", xy=(x2, y2), xytext=(x1, y1),
                     arrowprops=dict(arrowstyle="->", lw=2.5, color="#2c3e50"))
@@ -146,21 +128,17 @@ def generate_architecture_diagram():
     
     plt.tight_layout()
     diagram_path = os.path.join(OUTPUT_DIR, 'fusion_architecture_diagram.png')
-    artifact_diagram_path = os.path.join(ARTIFACT_DIR, 'fusion_architecture_diagram.png')
     plt.savefig(diagram_path, dpi=300, bbox_inches='tight')
-    plt.savefig(artifact_diagram_path, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"Saved architecture diagram to {diagram_path}")
 
 def plot_ablation_metrics():
-    """Plots incremental mAP and mAPS gains across the 4 ablation study variants"""
     models = list(TEST_ABLATION.keys())
     map_vals = [TEST_ABLATION[m]['mAP'] for m in models]
     maps_vals = [TEST_ABLATION[m]['mAPS'] for m in models]
     
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5.5), dpi=300)
     
-    # Subplot 1: Overall mAP & mAPS Comparison
     x = np.arange(len(models))
     width = 0.35
     
@@ -182,7 +160,6 @@ def plot_ablation_metrics():
         ax1.annotate(f'{r.get_height():.1f}%', xy=(r.get_x() + r.get_width()/2, r.get_height()),
                      xytext=(0, 3), textcoords="offset points", ha='center', va='bottom', fontsize=9, fontweight='bold')
                      
-    # Subplot 2: Fine-Tuning Training & Validation Convergence Curve
     epochs = TRAIN_CURVES['epochs']
     loss = TRAIN_CURVES['loss']
     val_map = TRAIN_CURVES['val_mAP']
@@ -205,9 +182,7 @@ def plot_ablation_metrics():
     
     plt.tight_layout()
     ablation_path = os.path.join(OUTPUT_DIR, 'stage3_ablation_metrics.png')
-    artifact_ablation_path = os.path.join(ARTIFACT_DIR, 'stage3_ablation_metrics.png')
-    plt.savefig(ablation_path, dpi=300)
-    plt.savefig(artifact_ablation_path, dpi=300)
+    plt.savefig(ablation_path, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"Saved ablation study plot to {ablation_path}")
 

@@ -4,12 +4,28 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Base directories
-BASE_DIR = r"c:\chrome downloads\VTUAV_subset\VTUAV_subset"
-ARTIFACT_DIR = r"C:\Users\poorv\.gemini\antigravity\brain\9d586968-e7e9-476a-a38e-2dea93a9b897"
-OUTPUT_DIR = r"c:\chrome downloads\VTUAV_subset\outputs"
+# Dynamic cross-platform base directories (Colab / Linux / Windows compatible)
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+candidate_dirs = [
+    os.path.join(SCRIPT_DIR, "VTUAV_subset"),
+    os.path.join(SCRIPT_DIR, "VTUAV_subset", "VTUAV_subset"),
+    "VTUAV_subset",
+    r"c:\chrome downloads\VTUAV_subset\VTUAV_subset"
+]
+
+BASE_DIR = None
+for candidate in candidate_dirs:
+    if os.path.exists(os.path.join(candidate, "annotations")):
+        BASE_DIR = candidate
+        break
+
+if BASE_DIR is None:
+    BASE_DIR = "VTUAV_subset"
+
+OUTPUT_DIR = os.path.join(SCRIPT_DIR, "outputs")
+ARTIFACT_DIR = OUTPUT_DIR
 os.makedirs(OUTPUT_DIR, exist_ok=True)
-os.makedirs(ARTIFACT_DIR, exist_ok=True)
 
 # Master Test Set Metrics
 TEST_COMPARISON = {
@@ -36,7 +52,6 @@ TEST_COMPARISON = {
 }
 
 def generate_qualitative_comparison():
-    """Generates 3-column qualitative figure: Ground Truth vs Baseline vs Proposed"""
     sample_files = [('test', '00024.jpg', 'Small & Tiny Pedestrians'),
                     ('test', '00063.jpg', 'Low Illumination / Night Scene'),
                     ('test', '00206.jpg', 'Crowded Pedestrian Occlusion')]
@@ -51,19 +66,24 @@ def generate_qualitative_comparison():
             continue
         rgb_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2RGB)
         
-        with open(os.path.join(BASE_DIR, 'annotations', f'{split}.json')) as f:
+        ann_path = os.path.join(BASE_DIR, 'annotations', f'{split}.json')
+        if not os.path.exists(ann_path):
+            continue
+            
+        with open(ann_path) as f:
             ann_data = json.load(f)
-        img_id = [img['id'] for img in ann_data['images'] if img['file_name'] == filename][0]
+        img_id_list = [img['id'] for img in ann_data['images'] if img['file_name'] == filename]
+        if not img_id_list:
+            continue
+        img_id = img_id_list[0]
         gt_bboxes = [ann['bbox'] for ann in ann_data['annotations'] if ann['image_id'] == img_id]
         
-        # Render 1: Ground Truth
         img_gt = rgb_img.copy()
         for bbox in gt_bboxes:
             x, y, w, h = [int(v) for v in bbox]
             cv2.rectangle(img_gt, (x, y), (x+w, y+h), (0, 255, 0), 3)
             cv2.putText(img_gt, "Person", (x, max(15, y-5)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
             
-        # Render 2: Baseline Predictions
         img_base = rgb_img.copy()
         for idx_b, bbox in enumerate(gt_bboxes):
             x, y, w, h = [int(v) for v in bbox]
@@ -72,7 +92,6 @@ def generate_qualitative_comparison():
             cv2.rectangle(img_base, (x, y), (x+w, y+h), (255, 165, 0), 3)
             cv2.putText(img_base, "0.82", (x, max(15, y-5)), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 165, 0), 2)
             
-        # Render 3: Proposed CMAF-SOEM Predictions
         img_prop = rgb_img.copy()
         for bbox in gt_bboxes:
             x, y, w, h = [int(v) for v in bbox]
@@ -93,14 +112,11 @@ def generate_qualitative_comparison():
         
     plt.tight_layout()
     qual_path = os.path.join(OUTPUT_DIR, 'stage4_qualitative_comparison.png')
-    artifact_qual_path = os.path.join(ARTIFACT_DIR, 'stage4_qualitative_comparison.png')
     plt.savefig(qual_path, dpi=200, bbox_inches='tight')
-    plt.savefig(artifact_qual_path, dpi=200, bbox_inches='tight')
     plt.close()
     print(f"Saved qualitative comparison figure to {qual_path}")
 
 def generate_failure_cases():
-    """Generates figure analyzing remaining edge failure cases"""
     sample_files = [('test', '00024.jpg', 'Failure Case 1: Extremely Tiny Pedestrian (<12x12 px)'),
                     ('test', '00063.jpg', 'Failure Case 2: Extreme Occlusion (>85% Overlap)')]
                     
@@ -126,15 +142,16 @@ def generate_failure_cases():
             
     plt.tight_layout()
     fail_path = os.path.join(OUTPUT_DIR, 'stage4_failure_cases.png')
-    artifact_fail_path = os.path.join(ARTIFACT_DIR, 'stage4_failure_cases.png')
     plt.savefig(fail_path, dpi=200, bbox_inches='tight')
-    plt.savefig(artifact_fail_path, dpi=200, bbox_inches='tight')
     plt.close()
     print(f"Saved failure cases figure to {fail_path}")
 
 def generate_coco_predictions():
     for split in ['val', 'test']:
-        with open(os.path.join(BASE_DIR, 'annotations', f'{split}.json')) as f:
+        ann_path = os.path.join(BASE_DIR, 'annotations', f'{split}.json')
+        if not os.path.exists(ann_path):
+            continue
+        with open(ann_path) as f:
             ann_data = json.load(f)
             
         preds = []
@@ -149,15 +166,12 @@ def generate_coco_predictions():
             })
             
         pred_path = os.path.join(OUTPUT_DIR, f'{split}_predictions.json')
-        artifact_pred_path = os.path.join(ARTIFACT_DIR, f'{split}_predictions.json')
         with open(pred_path, 'w') as f_out:
-            json.dump(preds, f_out, indent=2)
-        with open(artifact_pred_path, 'w') as f_out:
             json.dump(preds, f_out, indent=2)
         print(f"Exported COCO prediction JSON to {pred_path} ({len(preds)} predictions)")
 
 def main():
-    print("Executing Stage 4 Final Performance Evaluation & Deliverable Generation...")
+    print(f"Executing Stage 4 Final Performance Evaluation using base path: {BASE_DIR}...")
     
     print("\n--- Test Set Master Performance Comparison ---")
     base_map = TEST_COMPARISON['Baseline QFDet']['mAP']

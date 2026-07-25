@@ -4,12 +4,29 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Base directories
-BASE_DIR = r"c:\chrome downloads\VTUAV_subset\VTUAV_subset"
-ARTIFACT_DIR = r"C:\Users\poorv\.gemini\antigravity\brain\9d586968-e7e9-476a-a38e-2dea93a9b897"
-OUTPUT_DIR = r"c:\chrome downloads\VTUAV_subset\outputs"
+# Dynamic cross-platform base directories (Colab / Linux / Windows compatible)
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Check potential dataset locations
+candidate_dirs = [
+    os.path.join(SCRIPT_DIR, "VTUAV_subset"),
+    os.path.join(SCRIPT_DIR, "VTUAV_subset", "VTUAV_subset"),
+    "VTUAV_subset",
+    r"c:\chrome downloads\VTUAV_subset\VTUAV_subset"
+]
+
+BASE_DIR = None
+for candidate in candidate_dirs:
+    if os.path.exists(os.path.join(candidate, "annotations")):
+        BASE_DIR = candidate
+        break
+
+if BASE_DIR is None:
+    BASE_DIR = "VTUAV_subset"
+
+OUTPUT_DIR = os.path.join(SCRIPT_DIR, "outputs")
+ARTIFACT_DIR = OUTPUT_DIR
 os.makedirs(OUTPUT_DIR, exist_ok=True)
-os.makedirs(ARTIFACT_DIR, exist_ok=True)
 
 SPLITS = ['train', 'val', 'test']
 
@@ -55,7 +72,7 @@ def analyze_scale_distribution(dataset):
         buckets = {'small': 0, 'medium': 0, 'large': 0, 'total': 0}
         areas = []
         for ann in dataset[split]['annotations']:
-            bbox = ann['bbox'] # [x, y, w, h]
+            bbox = ann['bbox']
             w, h = bbox[2], bbox[3]
             area = w * h
             areas.append(area)
@@ -63,17 +80,16 @@ def analyze_scale_distribution(dataset):
             buckets['total'] += 1
             overall_buckets['total'] += 1
             
-            if area < 1024: # 32^2 = 1024
+            if area < 1024:
                 buckets['small'] += 1
                 overall_buckets['small'] += 1
-            elif area < 9216: # 96^2 = 9216
+            elif area < 9216:
                 buckets['medium'] += 1
                 overall_buckets['medium'] += 1
             else:
                 buckets['large'] += 1
                 overall_buckets['large'] += 1
                 
-        # Percentages
         tot = buckets['total']
         scale_stats[split] = {
             'small_count': buckets['small'],
@@ -136,9 +152,7 @@ def plot_scale_distribution(scale_stats):
     
     plt.tight_layout()
     chart_path = os.path.join(OUTPUT_DIR, 'scale_distribution.png')
-    artifact_chart_path = os.path.join(ARTIFACT_DIR, 'scale_distribution.png')
     plt.savefig(chart_path, dpi=300)
-    plt.savefig(artifact_chart_path, dpi=300)
     plt.close()
     print(f"Saved scale distribution chart to {chart_path}")
 
@@ -200,16 +214,13 @@ def generate_alignment_visualization(dataset, num_pairs=20):
         
     plt.tight_layout()
     align_path = os.path.join(OUTPUT_DIR, 'alignment_verification_20pairs.png')
-    artifact_align_path = os.path.join(ARTIFACT_DIR, 'alignment_verification_20pairs.png')
     plt.savefig(align_path, dpi=200, bbox_inches='tight')
-    plt.savefig(artifact_align_path, dpi=200, bbox_inches='tight')
     plt.close()
     print(f"Saved alignment verification figure to {align_path}")
 
 def generate_challenging_scenarios(dataset):
     scenarios = {}
     
-    # 1. Small pedestrian (<400 area)
     for split in SPLITS:
         data = dataset[split]
         img_map = {img['id']: img for img in data['images']}
@@ -222,7 +233,6 @@ def generate_challenging_scenarios(dataset):
         if 'small' in scenarios:
             break
             
-    # 2. Heavy occlusion / crowding (>= 8 peds)
     for split in SPLITS:
         data = dataset[split]
         img_map = {img['id']: img for img in data['images']}
@@ -239,7 +249,6 @@ def generate_challenging_scenarios(dataset):
         if 'occlusion' in scenarios:
             break
 
-    # 3. Low illumination
     darkest_img = None
     min_mean = 255
     for split in SPLITS:
@@ -254,7 +263,6 @@ def generate_challenging_scenarios(dataset):
                     darkest_img = (split, img_info['file_name'], f'Low Illumination / Night Scene (RGB mean={mean_val:.1f})')
     scenarios['low_light'] = darkest_img if darkest_img else ('train', '00007.jpg', 'Low Illumination / Night Scene')
     
-    # 4. Background clutter
     for split in SPLITS:
         data = dataset[split]
         for img_info in data['images'][10:20]:
@@ -273,8 +281,13 @@ def generate_challenging_scenarios(dataset):
         rgb_path = os.path.join(BASE_DIR, 'VTUAV_co', split, 'images', filename)
         ir_path = os.path.join(BASE_DIR, 'VTUAV_ir', split, 'images', filename)
         
-        rgb_img = cv2.cvtColor(cv2.imread(rgb_path), cv2.COLOR_BGR2RGB)
-        ir_img = cv2.cvtColor(cv2.imread(ir_path), cv2.COLOR_BGR2RGB)
+        rgb_raw = cv2.imread(rgb_path)
+        ir_raw = cv2.imread(ir_path)
+        if rgb_raw is None or ir_raw is None:
+            continue
+            
+        rgb_img = cv2.cvtColor(rgb_raw, cv2.COLOR_BGR2RGB)
+        ir_img = cv2.cvtColor(ir_raw, cv2.COLOR_BGR2RGB)
         
         ann_map = []
         data = dataset[split]
@@ -301,9 +314,7 @@ def generate_challenging_scenarios(dataset):
         
     plt.tight_layout()
     ch_path = os.path.join(OUTPUT_DIR, 'challenging_scenarios.png')
-    artifact_ch_path = os.path.join(ARTIFACT_DIR, 'challenging_scenarios.png')
     plt.savefig(ch_path, dpi=200, bbox_inches='tight')
-    plt.savefig(artifact_ch_path, dpi=200, bbox_inches='tight')
     plt.close()
     print(f"Saved challenging scenarios figure to {ch_path}")
 
@@ -315,6 +326,9 @@ def generate_preprocessing_comparison():
     rgb = cv2.imread(rgb_path)
     ir = cv2.imread(ir_path, cv2.IMREAD_GRAYSCALE)
     
+    if rgb is None or ir is None:
+        return
+        
     ir_histeq = cv2.equalizeHist(ir)
     
     clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
@@ -360,14 +374,12 @@ def generate_preprocessing_comparison():
     
     plt.tight_layout()
     prep_path = os.path.join(OUTPUT_DIR, 'preprocessing_enhancement.png')
-    artifact_prep_path = os.path.join(ARTIFACT_DIR, 'preprocessing_enhancement.png')
     plt.savefig(prep_path, dpi=200, bbox_inches='tight')
-    plt.savefig(artifact_prep_path, dpi=200, bbox_inches='tight')
     plt.close()
     print(f"Saved preprocessing enhancement figure to {prep_path}")
 
 def main():
-    print("Loading VTUAV_subset annotation files...")
+    print(f"Loading VTUAV_subset annotation files from: {BASE_DIR}...")
     dataset = load_annotations()
     
     print("\n--- A. Dataset Statistics ---")
