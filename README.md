@@ -1,5 +1,6 @@
 # Multimodal RGB-Thermal Pedestrian Detection via Cross-Modal Attention and High-Resolution Feature Enhancement
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/poorvikagirish12-cell/Multimodal-RGB-Thermal-Pedestrian-Detection/blob/main/VTUAV_Pedestrian_Detection_Colab.ipynb)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.1%2B-red.svg)](https://pytorch.org/)
 [![Hackathon](https://img.shields.io/badge/MedhaDrishti-AI%20Hackathon%202026-gold.svg)]()
@@ -8,6 +9,14 @@ Official repository for **Yugma TechFest 2.0 - MedhaDrishti National-Level AI Ha
 **Challenge Topic**: AI for Multimodal RGB-Thermal Pedestrian Detection through Efficient Fusion Strategies  
 **Dataset**: VTUAV-det Benchmark Subset (`VTUAV_subset`)  
 **Department**: Information Science and Engineering, JNNCE Shivamogga  
+
+---
+
+## ⚡ Run Instantly on Google Colab
+
+You can run the entire pipeline (Stages 1 through 4, visualizations, PyTorch model training, ablation studies, and COCO prediction exports) directly in Google Colab with free/Pro GPU acceleration:
+
+👉 **[Open VTUAV_Pedestrian_Detection_Colab.ipynb in Google Colab](https://colab.research.google.com/github/poorvikagirish12-cell/Multimodal-RGB-Thermal-Pedestrian-Detection/blob/main/VTUAV_Pedestrian_Detection_Colab.ipynb)**
 
 ---
 
@@ -52,6 +61,7 @@ Our proposed detector (**CMAF-SOEM QFDet**) introduces a **Cross-Modal Attention
 ```
 Multimodal-RGB-Thermal-Pedestrian-Detection/
 ├── README.md                           # Main repository documentation
+├── VTUAV_Pedestrian_Detection_Colab.ipynb # Google Colab Interactive Notebook
 ├── .gitignore                          # Git ignore rules for dataset/venv
 ├── stage1_analysis.py                  # Stage 1: Dataset stats & alignment script
 ├── stage2_unimodal_benchmark.py        # Stage 2: Unimodal vs Baseline benchmark script
@@ -84,32 +94,22 @@ Multimodal-RGB-Thermal-Pedestrian-Detection/
 
 ## 💻 Quick Start & Environment Setup
 
-### 1. Clone Repository & Install Dependencies
+### Option 1: Run in Google Colab (Recommended)
+Click the badge above or use this link:  
+[Open VTUAV_Pedestrian_Detection_Colab.ipynb in Google Colab](https://colab.research.google.com/github/poorvikagirish12-cell/Multimodal-RGB-Thermal-Pedestrian-Detection/blob/main/VTUAV_Pedestrian_Detection_Colab.ipynb)
+
+### Option 2: Run Locally
 ```bash
 git clone https://github.com/poorvikagirish12-cell/Multimodal-RGB-Thermal-Pedestrian-Detection.git
 cd Multimodal-RGB-Thermal-Pedestrian-Detection
 
-pip install torch torchvision opencv-python numpy matplotlib
-```
+pip install torch torchvision opencv-python numpy matplotlib pycocotools
 
-### 2. Execute Stage 1 Analysis & Visualizations
-```bash
+# Run stage scripts
 python stage1_analysis.py
-```
-
-### 3. Execute Stage 2 Unimodal Benchmarking
-```bash
 python stage2_unimodal_benchmark.py
-```
-
-### 4. Test PyTorch Fusion Architecture & Run Stage 3 Ablation Study
-```bash
 python stage3_fusion_architecture.py
 python stage3_train_evaluate.py
-```
-
-### 5. Execute Stage 4 Final Evaluation & Export COCO Predictions
-```bash
 python stage4_final_eval_qualitative.py
 ```
 
