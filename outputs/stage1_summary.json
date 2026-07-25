@@ -1,0 +1,62 @@
+{
+  "stats": {
+    "train": {
+      "num_images": 1200,
+      "num_pedestrians": 8138,
+      "avg_per_image": 6.78
+    },
+    "val": {
+      "num_images": 300,
+      "num_pedestrians": 2337,
+      "avg_per_image": 7.79
+    },
+    "test": {
+      "num_images": 200,
+      "num_pedestrians": 2068,
+      "avg_per_image": 10.34
+    },
+    "overall": {
+      "num_images": 1700,
+      "num_pedestrians": 12543,
+      "avg_per_image": 7.38
+    }
+  },
+  "scale_stats": {
+    "train": {
+      "small_count": 809,
+      "small_pct": 9.94,
+      "medium_count": 5449,
+      "medium_pct": 66.96,
+      "large_count": 1880,
+      "large_pct": 23.1,
+      "total": 8138
+    },
+    "val": {
+      "small_count": 423,
+      "small_pct": 18.1,
+      "medium_count": 1592,
+      "medium_pct": 68.12,
+      "large_count": 322,
+      "large_pct": 13.78,
+      "total": 2337
+    },
+    "test": {
+      "small_count": 529,
+      "small_pct": 25.58,
+      "medium_count": 1270,
+      "medium_pct": 61.41,
+      "large_count": 269,
+      "large_pct": 13.01,
+      "total": 2068
+    },
+    "overall": {
+      "small_count": 1761,
+      "small_pct": 14.04,
+      "medium_count": 8311,
+      "medium_pct": 66.26,
+      "large_count": 2471,
+      "large_pct": 19.7,
+      "total": 12543
+    }
+  }
+}

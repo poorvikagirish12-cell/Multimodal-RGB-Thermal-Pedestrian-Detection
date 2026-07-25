@@ -1,0 +1,80 @@
+{
+  "val_results": {
+    "RGB-only": {
+      "mAP": 38.4,
+      "mAP50": 65.2,
+      "mAP75": 41.8,
+      "mAPS": 14.2,
+      "mAPM": 45.6,
+      "mAPL": 58.9
+    },
+    "Thermal-only": {
+      "mAP": 42.6,
+      "mAP50": 70.1,
+      "mAP75": 46.5,
+      "mAPS": 18.5,
+      "mAPM": 50.2,
+      "mAPL": 56.1
+    },
+    "Baseline QFDet": {
+      "mAP": 48.2,
+      "mAP50": 75.8,
+      "mAP75": 52.4,
+      "mAPS": 24.1,
+      "mAPM": 56.8,
+      "mAPL": 64.2
+    }
+  },
+  "test_results": {
+    "RGB-only": {
+      "mAP": 36.1,
+      "mAP50": 62.8,
+      "mAP75": 39.2,
+      "mAPS": 12.5,
+      "mAPM": 43.1,
+      "mAPL": 56.4
+    },
+    "Thermal-only": {
+      "mAP": 41.2,
+      "mAP50": 68.4,
+      "mAP75": 44.9,
+      "mAPS": 17.2,
+      "mAPM": 48.9,
+      "mAPL": 54.8
+    },
+    "Baseline QFDet": {
+      "mAP": 46.9,
+      "mAP50": 74.2,
+      "mAP75": 50.8,
+      "mAPS": 22.3,
+      "mAPM": 55.1,
+      "mAPL": 62.5
+    }
+  },
+  "compute_metrics": {
+    "RGB-only": {
+      "params_M": 31.8,
+      "flops_G": 118.5,
+      "size_MB": 127.2,
+      "latency_ms": 38.2,
+      "fps_gpu": 26.2,
+      "fps_cpu": 12.5
+    },
+    "Thermal-only": {
+      "params_M": 31.8,
+      "flops_G": 118.5,
+      "size_MB": 127.2,
+      "latency_ms": 37.8,
+      "fps_gpu": 26.5,
+      "fps_cpu": 12.7
+    },
+    "Baseline QFDet": {
+      "params_M": 63.6,
+      "flops_G": 242.8,
+      "size_MB": 254.4,
+      "latency_ms": 70.4,
+      "fps_gpu": 14.2,
+      "fps_cpu": 6.8
+    }
+  }
+}

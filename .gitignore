@@ -1,0 +1,21 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Data directory & large image subsets
+VTUAV_subset/VTUAV_co/
+VTUAV_subset/VTUAV_ir/
+VTUAV_subset.zip
+*.zip
+
+# Virtual environment & IDE
+.venv/
+env/
+venv/
+.idea/
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db

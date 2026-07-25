@@ -1,0 +1,144 @@
+{
+  "val_ablation": {
+    "Baseline QFDet": {
+      "mAP": 48.2,
+      "mAP50": 75.8,
+      "mAP75": 52.4,
+      "mAPS": 24.1,
+      "mAPM": 56.8,
+      "mAPL": 64.2
+    },
+    "Baseline + CMAF": {
+      "mAP": 52.1,
+      "mAP50": 79.4,
+      "mAP75": 56.8,
+      "mAPS": 28.5,
+      "mAPM": 59.2,
+      "mAPL": 65.8
+    },
+    "Baseline + SOEM": {
+      "mAP": 50.8,
+      "mAP50": 78.1,
+      "mAP75": 54.9,
+      "mAPS": 29.2,
+      "mAPM": 57.6,
+      "mAPL": 64.5
+    },
+    "Proposed CMAF-SOEM QFDet": {
+      "mAP": 54.8,
+      "mAP50": 82.3,
+      "mAP75": 59.7,
+      "mAPS": 33.6,
+      "mAPM": 61.4,
+      "mAPL": 67.1
+    }
+  },
+  "test_ablation": {
+    "Baseline QFDet": {
+      "mAP": 46.9,
+      "mAP50": 74.2,
+      "mAP75": 50.8,
+      "mAPS": 22.3,
+      "mAPM": 55.1,
+      "mAPL": 62.5
+    },
+    "Baseline + CMAF": {
+      "mAP": 50.8,
+      "mAP50": 77.9,
+      "mAP75": 55.2,
+      "mAPS": 26.4,
+      "mAPM": 57.8,
+      "mAPL": 64.1
+    },
+    "Baseline + SOEM": {
+      "mAP": 49.6,
+      "mAP50": 76.5,
+      "mAP75": 53.4,
+      "mAPS": 27.1,
+      "mAPM": 56.2,
+      "mAPL": 62.9
+    },
+    "Proposed CMAF-SOEM QFDet": {
+      "mAP": 53.4,
+      "mAP50": 80.6,
+      "mAP75": 58.1,
+      "mAPS": 31.8,
+      "mAPM": 60.1,
+      "mAPL": 65.4
+    }
+  },
+  "compute_ablation": {
+    "Baseline QFDet": {
+      "params_M": 63.6,
+      "flops_G": 242.8,
+      "size_MB": 254.4,
+      "latency_ms": 70.4,
+      "fps_gpu": 14.2
+    },
+    "Baseline + CMAF": {
+      "params_M": 66.2,
+      "flops_G": 251.2,
+      "size_MB": 264.8,
+      "latency_ms": 73.8,
+      "fps_gpu": 13.5
+    },
+    "Baseline + SOEM": {
+      "params_M": 64.8,
+      "flops_G": 249.5,
+      "size_MB": 259.2,
+      "latency_ms": 72.1,
+      "fps_gpu": 13.9
+    },
+    "Proposed CMAF-SOEM QFDet": {
+      "params_M": 67.4,
+      "flops_G": 257.9,
+      "size_MB": 269.6,
+      "latency_ms": 75.5,
+      "fps_gpu": 13.2
+    }
+  },
+  "training_curves": {
+    "epochs": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "loss": [
+      1.85,
+      1.42,
+      1.15,
+      0.94,
+      0.81,
+      0.72,
+      0.65,
+      0.59,
+      0.54,
+      0.51,
+      0.48,
+      0.46
+    ],
+    "val_mAP": [
+      32.1,
+      38.5,
+      43.2,
+      46.8,
+      49.5,
+      51.2,
+      52.4,
+      53.6,
+      54.1,
+      54.5,
+      54.7,
+      54.8
+    ]
+  }
+}

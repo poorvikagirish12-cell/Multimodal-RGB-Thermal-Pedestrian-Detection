@@ -1,0 +1,60 @@
+{
+  "test_comparison": {
+    "RGB-Only": {
+      "mAP": 36.1,
+      "mAP50": 62.8,
+      "mAP75": 39.2,
+      "mAPS": 12.5,
+      "mAPM": 43.1,
+      "mAPL": 56.4,
+      "params_M": 31.8,
+      "flops_G": 118.5,
+      "fps": 26.2,
+      "latency_ms": 38.2
+    },
+    "Thermal-Only": {
+      "mAP": 41.2,
+      "mAP50": 68.4,
+      "mAP75": 44.9,
+      "mAPS": 17.2,
+      "mAPM": 48.9,
+      "mAPL": 54.8,
+      "params_M": 31.8,
+      "flops_G": 118.5,
+      "fps": 26.5,
+      "latency_ms": 37.8
+    },
+    "Baseline QFDet": {
+      "mAP": 46.9,
+      "mAP50": 74.2,
+      "mAP75": 50.8,
+      "mAPS": 22.3,
+      "mAPM": 55.1,
+      "mAPL": 62.5,
+      "params_M": 63.6,
+      "flops_G": 242.8,
+      "fps": 14.2,
+      "latency_ms": 70.4
+    },
+    "Proposed CMAF-SOEM QFDet": {
+      "mAP": 53.4,
+      "mAP50": 80.6,
+      "mAP75": 58.1,
+      "mAPS": 31.8,
+      "mAPM": 60.1,
+      "mAPL": 65.4,
+      "params_M": 67.4,
+      "flops_G": 257.9,
+      "fps": 13.2,
+      "latency_ms": 75.5
+    }
+  },
+  "overall_gain": {
+    "abs_mAP": 6.5,
+    "rel_mAP_pct": 13.86
+  },
+  "small_ped_gain": {
+    "abs_mAPS": 9.5,
+    "rel_mAPS_pct": 42.6
+  }
+}
