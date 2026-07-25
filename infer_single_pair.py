@@ -28,33 +28,36 @@ def run_inference(rgb_path, ir_path, output_path="outputs/single_test_result.png
 
     h, w, _ = rgb_img.shape
 
-    # Simulated/Trained Detector Inference Predictions for custom/sample image pair
-    # In full evaluation, passes features through CMAF-SOEM QFDet model.
-    # Here we locate salient regions or pedestrians
-    # Generate high-confidence pedestrian predictions
-    boxes = []
-    
-    # Simple pedestrian proposal logic for demonstration on test/custom images
-    # If image contains pedestrians, we detect salient human-like bounding regions
-    ir_gray = cv2.cvtColor(ir_raw, cv2.COLOR_BGR2GRAY)
-    blurred = cv2.GaussianBlur(ir_gray, (5, 5), 0)
-    _, thresh = cv2.threshold(blurred, 160, 255, cv2.THRESH_BINARY)
-    contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    # --- CMAF-SOEM QFDet SIMULATION ---
+    # For the hackathon demo on custom images without our full trained weights,
+    # we simulate the high-accuracy multimodal detector by using a pre-trained 
+    # ResNet50 backbone on the RGB input to detect real pedestrians (COCO class 1).
+    import torch
+    import torchvision
+    from torchvision.models.detection import fasterrcnn_resnet50_fpn, FasterRCNN_ResNet50_FPN_Weights
 
-    for cnt in contours:
-        x_c, y_c, w_c, h_c = cv2.boundingRect(cnt)
-        if 15 <= w_c <= 200 and 20 <= h_c <= 300:
-            aspect_ratio = h_c / float(w_c)
-            if 0.8 <= aspect_ratio <= 4.5:
-                score = round(float(np.random.uniform(0.86, 0.98)), 2)
-                boxes.append((x_c, y_c, w_c, h_c, score))
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model = fasterrcnn_resnet50_fpn(weights=FasterRCNN_ResNet50_FPN_Weights.DEFAULT).to(device)
+    model.eval()
+
+    # Preprocess RGB image for the model
+    rgb_tensor = torchvision.transforms.functional.to_tensor(rgb_img).unsqueeze(0).to(device)
+
+    with torch.no_grad():
+        predictions = model(rgb_tensor)[0]
+
+    boxes = []
+    for i in range(len(predictions['boxes'])):
+        score = predictions['scores'][i].item()
+        label = predictions['labels'][i].item()
+        
+        # Label 1 is 'person' in COCO dataset
+        if label == 1 and score >= conf_threshold:
+            x1, y1, x2, y2 = predictions['boxes'][i].cpu().numpy()
+            boxes.append((int(x1), int(y1), int(x2 - x1), int(y2 - y1), score))
 
     if len(boxes) == 0:
-        # Default sample boxes if high-contrast thermal threshold is quiet
-        boxes = [
-            (int(w*0.45), int(h*0.35), int(w*0.03), int(h*0.08), 0.94),
-            (int(w*0.52), int(h*0.40), int(w*0.025), int(h*0.07), 0.89)
-        ]
+        print("⚠️ No pedestrians detected with the current confidence threshold.")
 
     # Render bounding boxes on RGB and Thermal
     rgb_out = rgb_img.copy()
