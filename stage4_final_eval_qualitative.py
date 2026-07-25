@@ -69,10 +69,17 @@ def generate_qualitative_comparison():
     
     for row_idx, (split, filename, scenario_title) in enumerate(sample_files):
         rgb_path = os.path.join(BASE_DIR, 'VTUAV_co', split, 'images', filename)
-        rgb_img = cv2.imread(rgb_path)
-        if rgb_img is None:
+        ir_path = os.path.join(BASE_DIR, 'VTUAV_ir', split, 'images', filename)
+        rgb_raw = cv2.imread(rgb_path)
+        ir_raw = cv2.imread(ir_path)
+        
+        if rgb_raw is None or ir_raw is None:
+            print(f"⚠️ DEBUG: Failed to read images. Searched for:")
+            print(f"  RGB: {rgb_path} (Exists: {os.path.exists(rgb_path)})")
+            print(f"  IR: {ir_path} (Exists: {os.path.exists(ir_path)})")
             continue
-        rgb_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2RGB)
+            
+        rgb_img = cv2.cvtColor(rgb_raw, cv2.COLOR_BGR2RGB)
         
         ann_path = os.path.join(BASE_DIR, 'annotations', f'{split}.json')
         if not os.path.exists(ann_path):

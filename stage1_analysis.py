@@ -199,6 +199,12 @@ def generate_alignment_visualization(dataset, num_pairs=20):
         ir_img = cv2.imread(ir_path)
         
         if rgb_img is None or ir_img is None:
+            print(f"⚠️ DEBUG: Failed to read images. Searched for:")
+            print(f"  RGB: {rgb_path} (Exists: {os.path.exists(rgb_path)})")
+            print(f"  IR: {ir_path} (Exists: {os.path.exists(ir_path)})")
+            print(f"  Directory contents of BASE_DIR ({BASE_DIR}): {os.listdir(BASE_DIR)}")
+            if os.path.exists(os.path.join(BASE_DIR, 'VTUAV_co')):
+                print(f"  Directory contents of VTUAV_co: {os.listdir(os.path.join(BASE_DIR, 'VTUAV_co'))}")
             continue
             
         rgb_img = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2RGB)
