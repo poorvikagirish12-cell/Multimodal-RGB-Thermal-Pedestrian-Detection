@@ -100,12 +100,19 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Dynamic fallback path resolution for Colab / Local
+    if not os.path.exists(args.rgb):
+        for candidate in ["VTUAV_co/test/images/00024.jpg", "VTUAV_subset/VTUAV_co/test/images/00024.jpg", "VTUAV_subset/VTUAV_subset/VTUAV_co/test/images/00024.jpg"]:
+            if os.path.exists(candidate):
+                args.rgb = candidate
+                break
+                
+    if not os.path.exists(args.ir):
+        for candidate in ["VTUAV_ir/test/images/00024.jpg", "VTUAV_subset/VTUAV_ir/test/images/00024.jpg", "VTUAV_subset/VTUAV_subset/VTUAV_ir/test/images/00024.jpg"]:
+            if os.path.exists(candidate):
+                args.ir = candidate
+                break
+
     rgb_path = args.rgb
     ir_path = args.ir
-
-    if not os.path.exists(rgb_path):
-        rgb_path = os.path.join("VTUAV_subset", "VTUAV_subset", "VTUAV_co", "test", "images", "00024.jpg")
-    if not os.path.exists(ir_path):
-        ir_path = os.path.join("VTUAV_subset", "VTUAV_subset", "VTUAV_ir", "test", "images", "00024.jpg")
 
     run_inference(rgb_path, ir_path, args.out, args.conf)
