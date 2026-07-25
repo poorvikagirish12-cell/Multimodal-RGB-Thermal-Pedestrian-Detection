@@ -153,11 +153,53 @@ Please view the full [Model Card](MODEL_CARD.md) for details on parameters, FLOP
 
 ---
 
-## 📜 Reports & Presentations
+## 🚀 Setup Instructions
 
-- 📄 **Master 3–5 Page Technical Report**: [final_technical_report.md](final_technical_report.md)
-- 📊 **Presentation Defense Slide Deck Outline**: [presentation_slides_outline.md](presentation_slides_outline.md)
-- 📝 **Full Hackathon Walkthrough**: [walkthrough.md](walkthrough.md)
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/poorvikagirish12-cell/Multimodal-RGB-Thermal-Pedestrian-Detection.git
+   cd Multimodal-RGB-Thermal-Pedestrian-Detection
+   ```
+
+2. **Install Requirements**
+   All necessary Python packages are documented in the `requirements.txt` file. Install them using:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Run on Google Colab (Recommended)**
+   Because training/inference requires a GPU, the easiest way to run the project is using Google Colab.
+   Run the environment generation script:
+   ```bash
+   python create_colab_notebook.py
+   ```
+   This will generate a `.ipynb` file that you can upload directly to Google Colab and run top-to-bottom.
+
+---
+
+## 💻 Usage
+
+The repository is divided into discrete functional stages. You can execute them sequentially in your Colab notebook or locally via terminal:
+
+* **Stage 1 (Analysis):** Run `python stage1_analysis.py` to parse the dataset splits and verify RGB-Thermal alignment.
+* **Stage 2 (Benchmark):** Run `python stage2_benchmark.py` to calculate the model's FLOPs and Parameter count.
+* **Stage 3 (Ablation):** Run `python stage3_ablation.py` to instantiate the CMAF-SOEM PyTorch architectures and generate the metrics table.
+* **Stage 4 (Evaluation):** Run `python stage4_final_eval_qualitative.py` to generate bounding box predictions on the test set and output final mAP scores.
+* **Interactive Demo:** Run `python infer_single_pair.py --rgb <path_to_rgb> --ir <path_to_thermal>` to run the model on a custom image pair.
+
+---
+
+## 📂 Dataset Splits (Train, Validation, Test)
+
+To ensure rigorous evaluation, our data is strictly divided into three subsets. We have explicitly separated these subsets into dedicated folders in this repository so they can be easily reviewed:
+
+* 📁 **[`train_data/`](./train_data)**: Contains the training image pairs (1,200 total) used to teach the model. (A sample pair is included in the folder).
+* 📁 **[`val_data/`](./val_data)**: Contains the validation image pairs (300 total) used during the training loop to tune hyperparameters and prevent overfitting.
+* 📁 **[`test_data/`](./test_data)**: Contains the testing image pairs (200 total) that are strictly isolated from training. These are used at the very end to generate the final evaluation metrics (mAP). (A sample pair is included in the folder).
+
+The exact bounding box coordinates mapping these splits are strictly defined in `VTUAV_subset/annotations/`.
+
+--- 📝 **Full Hackathon Walkthrough**: [walkthrough.md](walkthrough.md)
 
 ---
 
