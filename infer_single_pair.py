@@ -9,18 +9,19 @@ def run_inference(rgb_path, ir_path, output_path="outputs/single_test_result.png
     Runs CMAF-SOEM QFDet inference on a single RGB-Thermal image pair and renders side-by-side predictions.
     """
     if not os.path.exists(rgb_path):
-        print(f"Error: RGB image not found at {rgb_path}")
-        return
+        print(f"\n❌ Error: RGB image not found at {rgb_path}")
+        print("Please upload and extract 'VTUAV_subset.zip' into the working directory first.")
+        import sys; sys.exit(1)
     if not os.path.exists(ir_path):
-        print(f"Error: Thermal image not found at {ir_path}")
-        return
+        print(f"\n❌ Error: Thermal image not found at {ir_path}")
+        import sys; sys.exit(1)
 
     rgb_raw = cv2.imread(rgb_path)
     ir_raw = cv2.imread(ir_path)
 
     if rgb_raw is None or ir_raw is None:
-        print("Error reading image files with OpenCV.")
-        return
+        print("\n❌ Error reading image files with OpenCV.")
+        import sys; sys.exit(1)
 
     rgb_img = cv2.cvtColor(rgb_raw, cv2.COLOR_BGR2RGB)
     ir_img = cv2.cvtColor(ir_raw, cv2.COLOR_BGR2RGB)

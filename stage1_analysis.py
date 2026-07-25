@@ -24,6 +24,12 @@ for candidate in candidate_dirs:
 if BASE_DIR is None:
     BASE_DIR = "VTUAV_subset"
 
+if not os.path.exists(os.path.join(BASE_DIR, "annotations")):
+    print(f"\n❌ ERROR: Dataset not found in {BASE_DIR}")
+    print("If you are running in Google Colab, please make sure to upload and extract 'VTUAV_subset.zip' into the working directory first.")
+    import sys
+    sys.exit(1)
+
 OUTPUT_DIR = os.path.join(SCRIPT_DIR, "outputs")
 ARTIFACT_DIR = OUTPUT_DIR
 os.makedirs(OUTPUT_DIR, exist_ok=True)
